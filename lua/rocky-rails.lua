@@ -2,7 +2,7 @@
 
 local M = {}
 
----@alias Cross {c:string?,u:string?,l:string?,d:string?,r:string?}
+---@alias Hood {c:string?,u:string?,l:string?,d:string?,r:string?}
 ---@alias Connectivity {u:bool,l:bool,d:bool,r:bool}
 
 ---@param r integer relative
@@ -29,8 +29,8 @@ local function get_connectivity(m)
     return connectivities[m] or none
 end
 
----@return Cross
-local function get_cross()
+---@return Hood
+local function get_hood_at_cursor()
     return {
         c = get_char(0, 0),
         u = get_char(-1, 0),
@@ -40,7 +40,7 @@ local function get_cross()
     }
 end
 
----@param cross Cross
+---@param cross Hood
 ---@return string[]
 local function get_candidates(cross)
     local cons = {
@@ -59,24 +59,27 @@ local function get_candidates(cross)
     return cans
 end
 
+--- cycle thru legal characters at the cursor given its neighbors
 function M.cycle()
-    local cross = get_cross()
-    if not cross.c then
+    local hood = get_hood_at_cursor()
+    if not hood.c then
         return
     end
-    local candidates = get_candidates(cross)
-    local new = nil
-    for i, can in ipairs(candidates) do
-        if can == cross.c then
-            new = candidates[(i % #candidates) + 1]
+
+    local cans = get_candidates(hood)
+
+    local next = nil
+    for i, can in ipairs(cans) do
+        if can == hood.c then
+            next = cans[(i % #cans) + 1]
             break
         end
     end
-    if not new then
-        new = candidates[1]
+    if not next then
+        next = cans[1]
     end
-    vim.print { cross = cross, candidates = candidates, new = new }
-    vim.cmd.normal { args = { "r" .. new }, bang = true }
+
+    vim.cmd.normal { args = { "r" .. next }, bang = true }
 end
 
 return M
