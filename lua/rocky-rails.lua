@@ -105,10 +105,13 @@ function M.cycle(forward)
     end
 
     local hood = get_hood_at_cursor()
-    local cans = get_candidates(hood)
+    local ocans = get_candidates(hood)
 
-    if not forward then
-        cans = vim.fn.reverse(cans)
+    local cans
+    if forward then
+        cans = ocans
+    else
+        cans = vim.fn.reverse(ocans)
     end
 
     local next = nil
@@ -118,15 +121,27 @@ function M.cycle(forward)
             break
         end
     end
-    if not next then
-        next = cans[1]
-    end
 
     if not next then
-        next = "o"
+        next = cans[1]
+        if not next then
+            next = "o"
+        end
     end
 
     vim.cmd.normal { args = { "r" .. next }, bang = true }
+
+    ---@diagnostic disable-next-line: redundant-parameter
+    local vis = vim.iter(ocans)
+        :map(function(i)
+            if i == next then
+                return ">" .. i .. "<"
+            else
+                return " " .. i .. " "
+            end
+        end)
+        :join("")
+    vim.print(vis)
 end
 
 function M.cycle_forward()
