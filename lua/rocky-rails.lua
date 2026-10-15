@@ -79,6 +79,10 @@ function M.cycle()
         next = cans[1]
     end
 
+    if not next then
+        next = "o"
+    end
+
     vim.cmd.normal { args = { "r" .. next }, bang = true }
 end
 
