@@ -13,7 +13,11 @@ local function get_char(r, c)
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
     row = row + r
     col = col + c
-    local m = unpack(vim.api.nvim_buf_get_text(0, row - 1, col, row - 1, col + 1, {}))
+    local ok, res = pcall(vim.api.nvim_buf_get_text, 0, row - 1, col, row - 1, col + 1, {})
+    if not ok then
+        return nil
+    end
+    local m = unpack(res)
     if not m or m == "" then
         return nil
     end
