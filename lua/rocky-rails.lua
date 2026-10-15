@@ -54,6 +54,7 @@ local connectivities = {
     ["╋"] = { u = true, l = true, d = true, r = true },
 }
 
+---@param m string?
 ---@return Connectivity
 local function get_connectivity(m)
     local none = { u = false, l = false, d = false, r = false }
@@ -81,24 +82,34 @@ local function get_candidates(cross)
         r = get_connectivity(cross.r),
     }
     local cans = {}
-    if cons.u.d and cons.d.u then
-        table.insert(cans, "|")
+    for k, v in pairs(connectivities) do
+        if
+            k ~= "o"
+            and (not v.u or cons.u.d)
+            and (not v.l or cons.l.r)
+            and (not v.d or cons.d.u)
+            and (not v.r or cons.r.l)
+        then
+            table.insert(cans, k)
+        end
     end
-    if cons.l.r and cons.r.l then
-        table.insert(cans, "-")
-    end
+    vim.print { cross = cross, cons = cons, cans = cans }
     return cans
 end
 
 --- cycle thru legal characters at the cursor given its neighbors
-function M.cycle()
-    local hood = get_hood_at_cursor()
-    if not hood.c then
-        -- TODO this means we are not on content (past the last column), we could insert spaces up to this point?
-        return
+---@param forward bool? which way to cycle
+function M.cycle(forward)
+    if forward == nil then
+        forward = true
     end
 
+    local hood = get_hood_at_cursor()
     local cans = get_candidates(hood)
+
+    if not forward then
+        cans = vim.fn.reverse(cans)
+    end
 
     local next = nil
     for i, can in ipairs(cans) do
@@ -116,6 +127,28 @@ function M.cycle()
     end
 
     vim.cmd.normal { args = { "r" .. next }, bang = true }
+end
+
+function M.cycle_forward()
+    M.cycle(true)
+end
+
+function M.cycle_backward()
+    M.cycle(false)
+end
+
+--- select and insert symbol, for normal mode
+function M.insert()
+    ---@param item string?
+    ---@param _idx integer?
+    local function on_choice(item, _idx)
+        if not item then
+            return
+        end
+        vim.cmd.normal { args = { "r" .. item }, bang = true }
+    end
+    local cans = vim.fn.keys(connectivities)
+    vim.ui.select(cans, {}, on_choice)
 end
 
 return M
