@@ -21,7 +21,22 @@ local function get_char(r, c)
 end
 
 ---@type table<string,Connectivity>
-local connectivities = { o = { u = true, l = true, d = true, r = true } }
+local connectivities = {
+    o = { u = true, l = true, d = true, r = true },
+    -- from https://en.wikipedia.org/wiki/Box-drawing_characters#Box_Drawing
+    -- these are easy, but you cannot make a a "T" that only allows up-left and up-right, it always allows left-right too
+    ["━"] = { u = false, l = true, d = false, r = true },
+    ["┃"] = { u = true, l = false, d = true, r = false },
+    ["┏"] = { u = false, l = false, d = true, r = true },
+    ["┓"] = { u = false, l = true, d = true, r = false },
+    ["┗"] = { u = true, l = false, d = false, r = true },
+    ["┛"] = { u = true, l = true, d = false, r = false },
+    ["┣"] = { u = true, l = false, d = true, r = true },
+    ["┫"] = { u = true, l = true, d = true, r = false },
+    ["┳"] = { u = false, l = true, d = true, r = true },
+    ["┻"] = { u = true, l = true, d = false, r = true },
+    ["╋"] = { u = true, l = true, d = true, r = true },
+}
 
 ---@return Connectivity
 local function get_connectivity(m)
