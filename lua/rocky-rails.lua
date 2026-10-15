@@ -13,14 +13,26 @@ local function get_char(r, c)
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
     row = row + r
     col = col + c
-    local ok, res = pcall(vim.api.nvim_buf_get_text, 0, row - 1, col, row - 1, col + 1, {})
-    if not ok then
+
+    local l = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1]
+    if not l then
         return nil
     end
-    local m = unpack(res)
+
+    -- 1-based indexing
+    local p = vim.str_utf_pos(l)
+
+    local a = p[col + 1]
+    if not a then
+        return nil
+    end
+    local b = (p[col + 2] or (#l + 1)) - 1
+
+    local m = string.sub(l, a, b)
     if not m or m == "" then
         return nil
     end
+
     return m
 end
 
