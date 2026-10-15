@@ -82,6 +82,7 @@ end
 function M.cycle()
     local hood = get_hood_at_cursor()
     if not hood.c then
+        -- TODO this means we are not on content (past the last column), we could insert spaces up to this point?
         return
     end
 
