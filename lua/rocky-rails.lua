@@ -9,8 +9,9 @@ local M = {}
 ---@param c integer relative
 ---@return string?
 local function get_char(r, c)
-    -- (1,0)-based indexing
-    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    -- (1,0)-based indexing, but its bytes, not utf8 items for cols
+    local row, _col = unpack(vim.api.nvim_win_get_cursor(0))
+    local col = vim.fn.getcursorcharpos()[3] - 1
     row = row + r
     col = col + c
 
