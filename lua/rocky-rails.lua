@@ -93,7 +93,6 @@ local function get_candidates(cross)
             table.insert(cans, k)
         end
     end
-    vim.print { cross = cross, cons = cons, cans = cans }
     return cans
 end
 
