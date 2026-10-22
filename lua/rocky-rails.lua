@@ -41,7 +41,6 @@ end
 local connectivities = {
     o = { u = true, l = true, d = true, r = true },
     -- from https://en.wikipedia.org/wiki/Box-drawing_characters#Box_Drawing
-    -- these are easy, but you cannot make a a "T" that only allows up-left and up-right, it always allows left-right too
     ["━"] = { u = false, l = true, d = false, r = true },
     ["┃"] = { u = true, l = false, d = true, r = false },
     ["┏"] = { u = false, l = false, d = true, r = true },
@@ -53,6 +52,19 @@ local connectivities = {
     ["┳"] = { u = false, l = true, d = true, r = true },
     ["┻"] = { u = true, l = true, d = false, r = true },
     ["╋"] = { u = true, l = true, d = true, r = true },
+    -- Y-connections: traveling on the thick part means you can choose and light arms always go to thick
+    ["┞"] = { u = true, l = false, d = true, r = true },
+    ["┟"] = { u = true, l = false, d = true, r = true },
+    ["┝"] = { u = true, l = false, d = true, r = true },
+    ["┦"] = { u = true, l = true, d = true, r = false },
+    ["┧"] = { u = true, l = true, d = true, r = false },
+    ["┥"] = { u = true, l = true, d = true, r = false },
+    ["┭"] = { u = false, l = true, d = true, r = true },
+    ["┮"] = { u = false, l = true, d = true, r = true },
+    ["┰"] = { u = false, l = true, d = true, r = true },
+    ["┵"] = { u = true, l = true, d = false, r = true },
+    ["┶"] = { u = true, l = true, d = false, r = true },
+    ["┸"] = { u = true, l = true, d = false, r = true },
 }
 
 ---@param m string?
